@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zooplus Pet Profile Widget</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .slide-in-panel {
+      transition: transform 0.5s ease-in-out;
+      transform: translateX(100%);
+    }
+    @media (min-width: 1024px) {
+      #petProfilePanel {
+        width: 420px;
+        height: 80vh;
+        top: 10%;
+        border: 4px solid #237803;
+        box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
+        border-radius: 14px;
+      }
+    }
+    .slide-in-panel.visible {
+      transform: translateX(0);
+    }
+    .slide-in-panel.hidden {
+      transform: translateX(100%);
+    }
+    .sticky-button {
+      transition: background-color 0.2s ease;
+      background-color: #237803;
+      border: 2px solid #facc15; /* Yellow outline */
+      display: flex;
+      align-items: center;
+      gap: 0.5rem; /* Space between icon and text */
+    }
+    .sticky-button:hover {
+      background-color: #144700;
+    }
+    .pet-icon {
+      transition: transform 0.3s ease; /* Icon rotation transition */
+    }
+    .sticky-button:hover .pet-icon {
+      transform: rotate(360deg); /* Rotate only the icon on hover */
+    }
+    .product-block {
+      transition: background-color 0.2s ease;
+    }
+    .product-block:hover {
+      background-color: #f0f4f8;
+    }
+    .pet-info-card {
+      transition: background-color 0.2s ease;
+    }
+    .pet-info-card:hover {
+      background-color: #f0f4f8;
+    }
+    .login-banner {
+      transition: background-color 0.2s ease;
+    }
+    .login-banner:hover {
+      background-color: #e6f0ff;
+    }
+    .slider-container {
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+    }
+    .slider {
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+    }
+    .slide {
+      min-width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1rem;
+      text-align: center;
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      background-color: #bbb;
+      border-radius: 50%;
+      display: inline-block;
+      margin: 0 4px;
+      cursor: pointer;
+    }
+    .dot.active {
+      background-color: #1a73e8;
+    }
+    .slider-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: rgba(255, 192, 192, 0.8);
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+    .slider-nav:hover {
+      background-color: rgb(255, 159, 159);
+    }
+    .slider-nav-left {
+      left: 8px;
+    }
+    .slider-nav-right {
+      right: 8px;
+    }
+    .bg-gradient-green {
+      background: linear-gradient(180deg, #f0fdf4 0%, #dcfce7 100%);
+    }
+    .bg-gradient-dark-green {
+      background: linear-gradient(180deg, #237803 0%, #144700 100%);
+    }
+    .hero-bg {
+      background-color: #237803;
+      background-size: cover;
+      background-position: center;
+    }
+    .section-title {
+      color: #144700;
+    }
+    .cta-button {
+      transition: all 0.3s ease;
+    }
+    .cta-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body class="font-sans">
+  <!-- Hero Section -->
+  <header class="hero-bg py-24 md:py-36 text-white text-center rounded-b-3xl shadow-xl">
+    <div class="container mx-auto px-4">
+      <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 drop-shadow-md">Unlock the Power of Personalization</h1>
+      <p class="text-lg sm:text-xl md:text-2xl mb-8 font-light drop-shadow-md max-w-3xl mx-auto">
+        A simple, elegant solution to transform how customers engage with the Zooplus Pet Profile feature.
+      </p>
+      
+    </div>
+  </header>
+
+  <main>
+    <!-- The Problem Section -->
+    <section class="py-16 md:py-24 bg-white rounded-t-3xl -mt-8 relative z-10 shadow-inner">
+      <div class="container mx-auto px-4 text-center max-w-5xl">
+        <h2 class="text-3xl sm:text-4xl font-bold mb-8 section-title">The Challenge: A Hidden Gem</h2>
+        <p class="text-lg text-gray-700 mb-12 max-w-3xl mx-auto">
+          The Zooplus Pet Profile is a powerful tool for customer engagement and loyalty, but it's currently a hidden feature. Tucked away in the account settings, it's missed by new visitors and non-logged-in shoppers.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="p-6 rounded-xl bg-gray-50 border border-gray-100 shadow-sm flex flex-col items-center text-center">
+            <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-4">
+              <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+            </div>
+            <h3 class="font-semibold text-xl mb-2">Low Visibility</h3>
+            <p class="text-gray-600">Many users never discover the feature, leading to lost opportunities for personalization.</p>
+          </div>
+
+          <div class="p-6 rounded-xl bg-gray-50 border border-gray-100 shadow-sm flex flex-col items-center text-center">
+            <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mb-4">
+              <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            </div>
+            <h3 class="font-semibold text-xl mb-2">High Friction</h3>
+            <p class="text-gray-600">The process of finding and filling out the profile requires multiple steps and logins.</p>
+          </div>
+
+          <div class="p-6 rounded-xl bg-gray-50 border border-gray-100 shadow-sm flex flex-col items-center text-center">
+            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+              <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.083 12.083 0 003 12c0 2.827.678 5.485 1.88 7.822"></path></svg>
+            </div>
+            <h3 class="font-semibold text-xl mb-2">Missed Value</h3>
+            <p class="text-gray-600">Customers aren't immediately shown the benefits of creating a pet profile.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- The Solution Section -->
+    <section id="the-solution" class="py-16 md:py-24 bg-gradient-green">
+      <div class="container mx-auto px-4 max-w-5xl">
+        <h2 class="text-3xl sm:text-4xl font-bold mb-12 text-center section-title">The Solution: A Seamless Integration</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          <div class="md:order-2">
+            <div class="bg-white p-8 rounded-2xl shadow-lg border-2 border-[#144700]">
+              <img src="https://placehold.co/400x300/237803/ffffff?text=Slide-in+Panel" alt="Slide-in Panel Mockup" class="w-full h-auto rounded-lg mb-4">
+              <h3 class="font-semibold text-2xl mb-2 text-[#144700]">The Slide-in Panel</h3>
+              <p class="text-gray-700">
+                A clean, responsive panel that slides in from the side, guiding the user through a quick and easy pet profile quiz. It's a frictionless, engaging experience that captures essential data and immediately presents personalized results.
+              </p>
+            </div>
+          </div>
+          <div class="md:order-1">
+            <div class="bg-white p-8 rounded-2xl shadow-lg border-2 border-[#144700]">
+              <img src="https://placehold.co/400x300/237803/ffffff?text=Sticky+Button" alt="Sticky Button Mockup" class="w-full h-auto rounded-lg mb-4">
+              <h3 class="font-semibold text-2xl mb-2 text-[#144700]">The Sticky Button</h3>
+              <p class="text-gray-700">
+                A persistent, floating button that remains in the corner of the screen. Its bold design and clear call-to-action ("Create my pet profile") act as a constant, non-intrusive reminder for both new and returning visitors.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- How it Works Section - New Component -->
+        <section class="py-16 md:py-24 bg-gray-50 border-t border-b border-gray-100">
+            <div class="container mx-auto px-4 max-w-5xl">
+                <h2 class="text-3xl sm:text-4xl font-bold mb-12 text-center section-title">How It Works: A Dynamic Experience</h2>
+                <p class="text-lg text-gray-700 text-center mb-12 max-w-3xl mx-auto">
+                    The slide-in panel intelligently adapts to the user's state, providing a tailored and highly relevant experience.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    <!-- Logged-Out Scenario -->
+                    <div class="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 flex flex-col items-center text-center">
+                        <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                        </div>
+                        <h3 class="font-semibold text-2xl mb-4 text-[#144700]">For Logged-Out Users</h3>
+                        <p class="text-gray-700 mb-6">
+                            When a user is not logged in, the widget presents a quick, multi-step pet profile creation process.
+                        </p>
+                        <ul class="text-left text-gray-600 space-y-2">
+                            <li class="flex items-start">
+                                <span class="text-green-600 font-bold mr-2">&#8226;</span>
+                                <span><strong>Step 1:</strong> The user quickly answers a few questions about their pet.</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-green-600 font-bold mr-2">&#8226;</span>
+                                <span><strong>Step 2:</strong> The panel immediately displays personalized product recommendations.</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-green-600 font-bold mr-2">&#8226;</span>
+                                <span><strong>Step 3:</strong> A clear call-to-action encourages the user to log in or create an account to save their new pet profile.</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Logged-In Scenario -->
+                    <div class="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 flex flex-col items-center text-center">
+                        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                        </div>
+                        <h3 class="font-semibold text-2xl mb-4 text-[#144700]">For Logged-In Users</h3>
+                        <p class="text-gray-700 mb-6">
+                            For logged-in users, the widget provides a shortcut to their saved information, enhancing the shopping experience.
+                        </p>
+                        <ul class="text-left text-gray-600 space-y-2">
+                            <li class="flex items-start">
+                                <span class="text-green-600 font-bold mr-2">&#8226;</span>
+                                <span><strong>Case 1:</strong> The user has existing pet profiles. The panel displays their saved pets.</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-green-600 font-bold mr-2">&#8226;</span>
+                                <span><strong>Case 2:</strong> The user has no saved profiles. The panel prompts them to create one, just like the logged-out experience.</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-green-600 font-bold mr-2">&#8226;</span>
+                                <span>This streamlines personalization and reinforces the value of the profile feature.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    <!-- The Benefits Section -->
+    <section class="py-16 md:py-24 bg-white">
+      <div class="container mx-auto px-4 max-w-5xl text-center">
+        <h2 class="text-3xl sm:text-4xl font-bold mb-12 section-title">Benefits: A Win-Win for Zooplus and Your Customers</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+          <!-- Brand Benefits -->
+          <div class="bg-gray-50 p-8 rounded-2xl shadow-lg border border-gray-100">
+            <div class="w-16 h-16 mx-auto bg-green-100 rounded-full flex items-center justify-center mb-4">
+              <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+            </div>
+            <h3 class="text-2xl font-bold mb-4 text-[#144700]">For the Brand</h3>
+            <ul class="space-y-4 text-left text-gray-700">
+              <li class="flex items-start">
+                <span class="text-green-600 font-bold mr-2">&#10003;</span>
+                <div><strong class="text-[#144700]">Higher Conversion & AOV:</strong> Personalized recommendations lead directly to more sales and larger basket sizes.</div>
+              </li>
+              <li class="flex items-start">
+                <span class="text-green-600 font-bold mr-2">&#10003;</span>
+                <div><strong class="text-[#144700]">Invaluable Data:</strong> Collect rich, first-party data on pet types, breeds, and preferences for targeted marketing.</div>
+              </li>
+              <li class="flex items-start">
+                <span class="text-green-600 font-bold mr-2">&#10003;</span>
+                <div><strong class="text-[#144700]">Enhanced Loyalty:</strong> A tailored experience makes customers feel understood and builds long-term trust.</div>
+              </li>
+            </ul>
+          </div>
+          <!-- Customer Benefits -->
+          <div class="bg-gray-50 p-8 rounded-2xl shadow-lg border border-gray-100">
+            <div class="w-16 h-16 mx-auto bg-blue-100 rounded-full flex items-center justify-center mb-4">
+              <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2-2m-2 2l-2-2m-3 10a5 5 0 110-10 5 5 0 010 10zM21 21v-4m0 0h-4m4 0l-2.293-2.293M17.707 17.707L20 20"></path></svg>
+            </div>
+            <h3 class="text-2xl font-bold mb-4 text-[#144700]">For the Customer</h3>
+            <ul class="space-y-4 text-left text-gray-700">
+              <li class="flex items-start">
+                <span class="text-green-600 font-bold mr-2">&#10003;</span>
+                <div><strong class="text-[#144700]">Personalized Experience:</strong> Instantly discover products and content perfectly suited to their pet.</div>
+              </li>
+              <li class="flex items-start">
+                <span class="text-green-600 font-bold mr-2">&#10003;</span>
+                <div><strong class="text-[#144700]">Time-Saving:</strong> Eliminate the need to browse through irrelevant products. Shopping becomes fast and effortless.</div>
+              </li>
+              <li class="flex items-start">
+                <span class="text-green-600 font-bold mr-2">&#10003;</span>
+                <div><strong class="text-[#144700]">Better Discovery:</strong> Get introduced to new brands and products they might not have found otherwise.</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Final CTA Section -->
+    <section class="py-20 md:py-28 bg-gradient-dark-green text-white text-center rounded-t-3xl shadow-xl">
+      <div class="container mx-auto px-4 max-w-4xl">
+        <h2 class="text-3xl sm:text-4xl font-bold mb-4 drop-shadow-md">Ready to Revolutionize the Zooplus Experience?</h2>
+        <p class="text-lg mb-8 font-light max-w-2xl mx-auto">
+          Let's discuss how this simple solution can deliver significant returns on engagement, data, and revenue.
+        </p>
+        <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+          <a href="https://www.linkedin.com/in/petar-skrbic/" target="_blank" class="cta-button inline-block bg-white text-[#144700] px-8 py-4 rounded-full font-semibold shadow-lg hover:bg-gray-200">
+            LinkedIn
+          </a>
+          <a href="mailto:notoolsnocraft@gmail.com" class="cta-button inline-block bg-white text-[#144700] px-8 py-4 rounded-full font-semibold shadow-lg hover:bg-gray-200">
+            Email
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Sticky Button -->
+  <button id="petProfileButton" class="sticky-button fixed bottom-4 right-4 text-white px-6 py-3 rounded-full shadow-lg z-50">
+    <svg class="pet-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
+    </svg>
+    My pet profile
+  </button>
+
+  <!-- Slide-in Panel -->
+  <div id="petProfilePanel" class="slide-in-panel fixed top-0 right-0 h-full w-full bg-white shadow-xl z-50 p-6 overflow-y-auto">
+    <button id="closePanel" class="absolute top-4 right-4 text-gray-600 hover:text-gray-800">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
+
+    <div id="panelContent">
+      <!-- Initial State -->
+      <div id="initialState">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4 mt-20 text-center">Create Your Pet's Profile</h2>
+        <p class="text-gray-600 mb-4">Answer a few quick questions to get personalized product suggestions for your pet!</p>
+        <div id="benefitSlider" class="slider-container mb-4">
+          <div class="slider">
+            <div class="slide flex flex-col items-center" role="group" aria-label="Benefit 1: Personalized Recommendations">
+              <svg class="w-8 h-8 text-blue-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <p class="text-sm text-black-700" style="margin-left: 2rem; margin-right: 2rem;">Get tailored product recommendations for your pet’s needs.</p>
+            </div>
+            <div class="slide flex flex-col items-center" role="group" aria-label="Benefit 2: Save Time">
+              <svg class="w-8 h-8 text-blue-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <p class="text-sm text-black-700" style="margin-left: 2rem; margin-right: 2rem;">Save time with quick, customized shopping.</p>
+            </div>
+            <div class="slide flex flex-col items-center" role="group" aria-label="Benefit 3: Exclusive Offers">
+              <svg class="w-8 h-8 text-blue-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 20" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <p class="text-sm text-black-700" style="margin-left: 2rem; margin-right: 2rem;">Unlock exclusive offers for your pet.</p>
+            </div>
+            <div class="slide flex flex-col items-center" role="group" aria-label="Benefit 4: Multi-Pet Management">
+              <svg class="w-8 h-8 text-blue-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+              </svg>
+              <p class="text-sm text-black-700" style="margin-left: 2rem; margin-right: 2rem;">Manage profiles for all your pets in one place.</p>
+            </div>
+          </div>
+          <button class="slider-nav slider-nav-left" aria-label="Previous slide">
+            <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+          </button>
+          <button class="slider-nav slider-nav-right" aria-label="Next slide">
+            <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </button>
+          <div class="flex justify-center mt-2">
+            <span class="dot" data-slide="0"></span>
+            <span class="dot" data-slide="1"></span>
+            <span class="dot" data-slide="2"></span>
+            <span class="dot" data-slide="3"></span>
+          </div>
+        </div>
+        <div class="flex justify-center">
+          <button id="startQuiz" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-800">Start Now</button>
+        </div>
+      </div>
+
+      <!-- Quiz Steps -->
+      <div id="quizContainer" class="hidden">
+        <!-- Step 1: Name and Gender -->
+        <div id="step1" class="quiz-step">
+          <h3 class="text-xl font-semibold text-gray-800 mb-4">Step 1: About Your Pet</h3>
+          <div class="mb-4">
+            <label class="block text-gray-700 mb-1">Pet Name</label>
+            <input id="petName" type="text" class="w-full border rounded-lg px-3 py-2" placeholder="Enter pet's name" maxlength="70">
+            <div id="nameError" class="text-red-600 text-sm mt-1 hidden"></div>
+          </div>
+          <div class="mb-4">
+            <label class="block text-gray-700 mb-1">Pet Gender</label>
+            <select id="petGender" class="w-full border rounded-lg px-3 py-2">
+              <option value="">Select gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
+            <div id="genderError" class="text-red-600 text-sm mt-1 hidden"></div>
+          </div>
+          <button id="nextStep1" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">Next</button>
+        </div>
+
+        <!-- Step 2: Pet Type -->
+        <div id="step2" class="quiz-step hidden">
+          <h3 class="text-xl font-semibold text-gray-800 mb-4">Step 2: Pet Type</h3>
+          <div class="grid grid-cols-2 gap-4 mb-4">
+            <button class="pet-type bg-gray-100 p-3 rounded-lg text-center hover:bg-blue-100" data-type="Dog">Dog</button>
+            <button class="pet-type bg-gray-100 p-3 rounded-lg text-center hover:bg-blue-100" data-type="Cat">Cat</button>
+            <button class="pet-type bg-gray-100 p-3 rounded-lg text-center hover:bg-blue-100" data-type="Small Pet">Small Pet</button>
+            <button class="pet-type bg-gray-100 p-3 rounded-lg text-center hover:bg-blue-100" data-type="Horse">Horse</button>
+            <button class="pet-type bg-gray-100 p-3 rounded-lg text-center hover:bg-blue-100" data-type="Bird">Bird</button>
+            <button class="pet-type bg-gray-100 p-3 rounded-lg text-center hover:bg-blue-100" data-type="Fish">Fish</button>
+          </div>
+          <button id="nextStep2" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 hidden">Next</button>
+        </div>
+
+        <!-- Step 3: Breed -->
+        <div id="step3" class="quiz-step hidden">
+          <h3 class="text-xl font-semibold text-gray-800 mb-4">Step 3: Pet Breed</h3>
+          <div class="mb-4">
+            <label class="block text-gray-700 mb-1">Breed</label>
+            <input id="petBreed" type="text" class="w-full border rounded-lg px-3 py-2" placeholder="Start typing breed...">
+            <div id="breedError" class="text-red-600 text-sm mt-1 hidden"></div>
+            <ul id="breedSuggestions" class="border rounded-lg mt-1 max-h-40 overflow-y-auto"></ul>
+          </div>
+          <button id="nextStep3" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">Next</button>
+        </div>
+
+        <!-- Step 4: Food Preferences -->
+        <div id="step4" class="quiz-step hidden">
+          <h3 class="text-xl font-semibold text-gray-800 mb-4">Step 4: Food Preferences for <span id="petNameDisplay"></span></h3>
+          <p class="text-gray-600 mb-4">Select up to 3 food brands your pet loves:</p>
+          <div id="foodOptions" class="max-h-60 overflow-y-auto mb-4"></div>
+          <button id="nextStep4" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">Next</button>
+        </div>
+
+        <!-- Step 5: Other Interests -->
+        <div id="step5" class="quiz-step hidden">
+          <h3 class="text-xl font-semibold text-gray-800 mb-4">Step 5: Other Items for <span id="petNameDisplay2"></span></h3>
+          <p class="text-gray-600 mb-4">Select up to 3 items you're interested in:</p>
+          <div id="interestOptions" class="max-h-60 overflow-y-auto mb-4"></div>
+          <button id="finishQuiz" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">Finish</button>
+        </div>
+      </div>
+
+      <!-- Pet Profile Display -->
+      <div id="profileDisplay" class="hidden">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">Your Pet's Profile</h2>
+        <div id="loginBanner" class="mb-4"></div>
+        <div id="petInfo" class="mb-6"></div>
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">Suggested Products</h3>
+        <div id="productSuggestions" class="space-y-4"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Sample data for breeds and products
+    const breedSuggestions = {
+      Dog: ['Labrador Retriever', 'German Shepherd', 'Golden Retriever', 'Bulldog', 'Poodle'],
+      Cat: ['Persian', 'Maine Coon', 'Siamese', 'Ragdoll', 'Sphynx'],
+      'Small Pet': ['Hamster', 'Guinea Pig', 'Rabbit', 'Ferret', 'Chinchilla'],
+      Horse: ['Thoroughbred', 'Arabian', 'Quarter Horse', 'Appaloosa', 'Morgan'],
+      Bird: ['Parakeet', 'Cockatiel', 'African Grey', 'Macaw', 'Canary'],
+      Fish: ['Goldfish', 'Betta', 'Guppy', 'Tetra', 'Angelfish']
+    };
+
+    const foodBrands = [
+      'Royal Canin', 'James Wellbeloved', "Hill's Science Plan", 'Arden Grange', 'Applaws',
+      'Acana', 'Orijen', 'Taste of the Wild', 'Purizon Dog', 'Wolf of Wilderness'
+    ];
+
+    const interestOptions = {
+      Dog: ['Toys', 'Beds', 'Collars & Leads', 'Bowls', 'Training Accessories', 'Kennels & Crates'],
+      Cat: ['Litter & Trays', 'Scratching Posts', 'Beds', 'Calming Treatments', 'Cat Flaps'],
+      'Small Pet': ['Cages', 'Wheels', 'Hay & Bedding', 'Toys', 'Tunnels'],
+      Horse: ['Grooming Brushes', 'Blankets', 'Feeders', 'Stable Toys'],
+      Bird: ['Cages', 'Perches', 'Toys', 'Mirrors'],
+      Fish: ['Aquariums', 'Filters', 'Decorations', 'Heaters', 'Lights']
+    };
+
+    const productSuggestions = {
+      Dog: [
+        { name: 'Royal Canin Breed', description: 'Tailored nutrition for specific dog breeds.', link: 'https://www.zooplus.com/shop/dogs/dry_dog_food/royal_canin_breed', image: 'https://media.zooplus.com/bilder/0/400/61151_pla_royalcanin_adulthund_labradorretriever_0.jpg', price: '$49.99' },
+        { name: 'Orthopaedic Dog Bed', description: 'Comfortable bed for joint support.', link: 'https://www.zooplus.com/shop/dogs/dog_beds', image: 'https://media.zooplus.com/bilder/4/400/108332_pla_orthosofa_grau_fg_4820_4.jpg', price: '$79.99' },
+        { name: 'Rubber Chicken Dog Toy', description: 'Durable toy for active dogs.', link: 'https://www.zooplus.com/shop/dogs/dog_toys_dog_training/squeaker_dog_toys/latex_squeakers/129763?activeVariant=129763.3', image: 'https://media.zooplus.com/bilder/6/400/60576_PLA_Hundespielzeug_Spiel_Huhn_mit_Squeaker_HS_6.jpg', price: '$14.99' }
+      ],
+      Cat: [
+        { name: "Hill's Science Plan", description: 'Veterinarian-developed cat food.', link: 'https://www.zooplus.com/shop/cats/canned_cat_food_pouches/hills_feline/adult/1093070?activeVariant=1093070.1', image: 'https://media.zooplus.com/bilder/4/400/606444_sp_feline_adult_perfect_digestion_chicken_stew_3d_full_front_eu__1__4.jpg', price: '$39.99' },
+        { name: 'Cat Scratching Post', description: 'Keeps your cat active and happy.', link: 'https://www.zooplus.com/shop/cats/scratching_posts/scratching_posts/posts/1965544?activeVariant=1965544.0', image: 'https://media.zooplus.com/bilder/0/400/412703__pla_tiaki_harry_fg_7092_0.jpg', price: '$29.99' },
+        { name: 'Feliway Calming Spray', description: 'Reduces stress for cats.', link: 'https://www.zooplus.com/shop/cats/cat_care_grooming/calming_treatment/spray/578297?activeVariant=578297.2', image: 'https://media.zooplus.com/bilder/5/400/70849_pla_felisept_home_comfort_beruhigungsspray_vorderseite_100ml_5.jpg', price: '$24.99' }
+      ],
+      'Small Pet': [
+        { name: 'Small Pet Cage', description: 'Spacious cage for small pets.', link: 'https://www.zooplus.com/shop/rodents/cages/rabbit_cage/120_cm_cages/570056?activeVariant=570056.1', image: 'https://media.zooplus.com/bilder/4/400/439396_pla_ferplast_kleintierk_fig_plaza_140_hs_01_4.jpg', price: '$59.99' },
+        { name: 'JR Farm Hay', description: 'Natural hay for small pets.', link: 'https://www.zooplus.com/shop/rodents/snacks_supplements/natural_plant_snacks/jr_farm/198304?activeVariant=198304.1', image: 'https://media.zooplus.com/bilder/3/400/36205_PLA_jrfarm_heu_glocke_3.jpg', price: '$9.99' }
+      ],
+      Horse: [
+        { name: 'Horse Feed', description: 'Nutritious feed for horses.', link: 'https://www.zooplus.com/shop/dogs/supplements_specialty_food/paws_patch/1584365?activeVariant=1584365.1', image: 'https://media.zooplus.com/bilder/9/400/346999_pla_paws_patch_msm_pulver_hs_01_9.jpg', price: '$29.99' }
+      ],
+      Bird: [
+        { name: 'Bird Seed Mix', description: 'Balanced diet for birds.', link: 'https://www.zooplus.com/shop/birds/bird_food/lillebro_wildbird_food/bird_seeds/1929892?activeVariant=1929892.0', image: 'https://media.zooplus.com/bilder/8/400/lillebro_wbf_mealworms_0_5kg_1000x1000_8.jpg', price: '$19.99' }
+      ],
+      Fish: [
+        { name: 'Tetra Fish Food', description: 'High-quality food for fish.', link: 'https://www.zooplus.com/shop/fish/food/fish_flakes/tetra/677919?activeVariant=677919.0', image: 'https://media.zooplus.com/bilder/8/400/4004218720893_de_front_8.jpg', price: '$12.99' }
+      ]
+    };
+
+    // Pet profile state
+    let petProfile = {
+      name: '',
+      gender: '',
+      type: '',
+      breed: '',
+      food: [],
+      interests: []
+    };
+
+    // Current quiz step
+    let currentStep = 0;
+
+    // DOM elements
+    const petProfileButton = document.getElementById('petProfileButton');
+    const petProfilePanel = document.getElementById('petProfilePanel');
+    const closePanel = document.getElementById('closePanel');
+    const initialState = document.getElementById('initialState');
+    const quizContainer = document.getElementById('quizContainer');
+    const profileDisplay = document.getElementById('profileDisplay');
+    const petNameInput = document.getElementById('petName');
+    const petGenderSelect = document.getElementById('petGender');
+    const petBreedInput = document.getElementById('petBreed');
+    const breedSuggestionsList = document.getElementById('breedSuggestions');
+    const foodOptionsDiv = document.getElementById('foodOptions');
+    const interestOptionsDiv = document.getElementById('interestOptions');
+    const petNameDisplay = document.getElementById('petNameDisplay');
+    const petNameDisplay2 = document.getElementById('petNameDisplay2');
+    const petInfoDiv = document.getElementById('petInfo');
+    const productSuggestionsDiv = document.getElementById('productSuggestions');
+    const loginBannerDiv = document.getElementById('loginBanner');
+    const startQuizButton = document.getElementById('startQuiz');
+    const nextStep1Button = document.getElementById('nextStep1');
+    const nextStep2Button = document.getElementById('nextStep2');
+    const nextStep3Button = document.getElementById('nextStep3');
+    const nextStep4Button = document.getElementById('nextStep4');
+    const finishQuizButton = document.getElementById('finishQuiz');
+    const nameErrorDiv = document.getElementById('nameError');
+    const genderErrorDiv = document.getElementById('genderError');
+    const breedErrorDiv = document.getElementById('breedError');
+
+    // Slider functionality
+    let currentSlide = 0;
+    let slideInterval;
+    const slides = document.querySelectorAll('.slide');
+    const dots = document.querySelectorAll('.dot');
+    const prevButton = document.querySelector('.slider-nav-left');
+    const nextButton = document.querySelector('.slider-nav-right');
+
+    function showSlide(index) {
+      const slider = document.querySelector('.slider');
+      if (index >= slides.length) index = 0;
+      if (index < 0) index = slides.length - 1;
+      slider.style.transform = `translateX(-${index * 100}%)`;
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === index);
+        dot.setAttribute('aria-selected', i === index ? 'true' : 'false');
+      });
+      currentSlide = index;
+    }
+
+    function startSlider() {
+      clearInterval(slideInterval);
+      slideInterval = setInterval(() => {
+        currentSlide = (currentSlide + 1) % slides.length;
+        showSlide(currentSlide);
+      }, 5000);
+    }
+
+    function resetSlider() {
+      clearInterval(slideInterval);
+      showSlide(currentSlide);
+      startSlider();
+    }
+
+    dots.forEach((dot, index) => {
+      dot.addEventListener('click', () => {
+        showSlide(index);
+        resetSlider();
+      });
+    });
+
+    prevButton.addEventListener('click', () => {
+      showSlide(currentSlide - 1);
+      resetSlider();
+    });
+
+    nextButton.addEventListener('click', () => {
+      showSlide(currentSlide + 1);
+      resetSlider();
+    });
+
+    const sliderContainer = document.querySelector('.slider-container');
+    sliderContainer.addEventListener('mouseenter', () => {
+      clearInterval(slideInterval);
+    });
+    sliderContainer.addEventListener('mouseleave', () => {
+      startSlider();
+    });
+
+    // Toggle panel visibility with slide effect
+    petProfileButton.addEventListener('click', () => {
+      if (petProfilePanel.classList.contains('hidden')) {
+        petProfilePanel.classList.remove('hidden');
+        petProfilePanel.classList.add('visible');
+        const savedProfile = localStorage.getItem('petProfile');
+        if (savedProfile) {
+          petProfile = JSON.parse(savedProfile);
+          petProfile.food = Array.isArray(petProfile.food) ? petProfile.food : [];
+          petProfile.interests = Array.isArray(petProfile.interests) ? petProfile.interests : [];
+          initialState.classList.add('hidden');
+          quizContainer.classList.add('hidden');
+          profileDisplay.classList.remove('hidden');
+          clearInterval(slideInterval);
+          displayPetProfile();
+        } else {
+          showSlide(0);
+          startSlider();
+        }
+      } else {
+        petProfilePanel.classList.remove('visible');
+        setTimeout(() => {
+          petProfilePanel.classList.add('hidden');
+          clearInterval(slideInterval);
+          resetQuizState();
+        }, 500);
+      }
+    });
+
+    closePanel.addEventListener('click', () => {
+      petProfilePanel.classList.remove('visible');
+      setTimeout(() => {
+        petProfilePanel.classList.add('hidden');
+        clearInterval(slideInterval);
+        resetQuizState();
+      }, 500);
+    });
+
+    // Start quiz
+    startQuizButton.addEventListener('click', () => {
+      clearInterval(slideInterval);
+      initialState.classList.add('hidden');
+      quizContainer.classList.remove('hidden');
+      document.getElementById('step1').classList.remove('hidden');
+      currentStep = 1;
+    });
+
+    // Step 1: Validate name and gender
+    nextStep1Button.addEventListener('click', () => {
+      const name = petNameInput.value.trim();
+      const gender = petGenderSelect.value;
+      let hasError = false;
+
+      nameErrorDiv.classList.add('hidden');
+      genderErrorDiv.classList.add('hidden');
+
+      if (!name) {
+        nameErrorDiv.textContent = 'Please enter a pet name.';
+        nameErrorDiv.classList.remove('hidden');
+        hasError = true;
+      }
+      if (!gender) {
+        genderErrorDiv.textContent = 'Please select a gender.';
+        genderErrorDiv.classList.remove('hidden');
+        hasError = true;
+      }
+
+      if (!hasError) {
+        petProfile.name = name;
+        petProfile.gender = gender;
+        document.getElementById('step1').classList.add('hidden');
+        document.getElementById('step2').classList.remove('hidden');
+        currentStep = 2;
+      }
+    });
+
+    // Step 2: Pet type selection
+    document.querySelectorAll('.pet-type').forEach(button => {
+      button.addEventListener('click', () => {
+        petProfile.type = button.dataset.type;
+        document.querySelectorAll('.pet-type').forEach(btn => btn.classList.remove('bg-blue-200'));
+        button.classList.add('bg-blue-200');
+        nextStep2Button.classList.remove('hidden');
+      });
+    });
+
+    nextStep2Button.addEventListener('click', () => {
+      if (petProfile.type) {
+        document.getElementById('step2').classList.add('hidden');
+        document.getElementById('step3').classList.remove('hidden');
+        currentStep = 3;
+        populateBreedSuggestions();
+      }
+    });
+
+    // Step 3: Breed autocomplete
+    function populateBreedSuggestions() {
+      breedSuggestionsList.innerHTML = '';
+      const breeds = breedSuggestions[petProfile.type] || [];
+      breeds.forEach(breed => {
+        const li = document.createElement('li');
+        li.textContent = breed;
+        li.classList.add('p-2', 'hover:bg-blue-100', 'cursor-pointer');
+        li.addEventListener('click', () => {
+          petBreedInput.value = breed;
+          petProfile.breed = breed;
+          breedSuggestionsList.innerHTML = '';
+          breedErrorDiv.classList.add('hidden');
+        });
+        breedSuggestionsList.appendChild(li);
+      });
+    }
+
+    petBreedInput.addEventListener('input', () => {
+      const input = petBreedInput.value.toLowerCase();
+      const breeds = breedSuggestions[petProfile.type] || [];
+      breedSuggestionsList.innerHTML = '';
+      const filteredBreeds = breeds.filter(breed => breed.toLowerCase().includes(input));
+      filteredBreeds.forEach(breed => {
+        const li = document.createElement('li');
+        li.textContent = breed;
+        li.classList.add('p-2', 'hover:bg-blue-100', 'cursor-pointer');
+        li.addEventListener('click', () => {
+          petBreedInput.value = breed;
+          petProfile.breed = breed;
+          breedSuggestionsList.innerHTML = '';
+          breedErrorDiv.classList.add('hidden');
+        });
+        breedSuggestionsList.appendChild(li);
+      });
+    });
+
+    nextStep3Button.addEventListener('click', () => {
+      const breed = petBreedInput.value.trim();
+      if (breed) {
+        petProfile.breed = breed;
+        breedErrorDiv.classList.add('hidden');
+        document.getElementById('step3').classList.add('hidden');
+        document.getElementById('step4').classList.remove('hidden');
+        petNameDisplay.textContent = petProfile.name;
+        populateFoodOptions();
+        currentStep = 4;
+      } else {
+        breedErrorDiv.textContent = 'Please enter a breed.';
+        breedErrorDiv.classList.remove('hidden');
+      }
+    });
+
+    // Step 4: Food preferences
+    function populateFoodOptions() {
+      foodOptionsDiv.innerHTML = '';
+      foodBrands.forEach(brand => {
+        const div = document.createElement('div');
+        div.classList.add('flex', 'items-center', 'mb-2');
+        div.innerHTML = `
+          <input type="checkbox" class="food-checkbox mr-2" value="${brand}">
+          <label>${brand}</label>
+        `;
+        foodOptionsDiv.appendChild(div);
+      });
+
+      document.querySelectorAll('.food-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+          const selected = Array.from(document.querySelectorAll('.food-checkbox:checked')).map(cb => cb.value);
+          if (selected.length > 3) {
+            checkbox.checked = false;
+            const errorDiv = document.createElement('div');
+            errorDiv.id = 'foodError';
+            errorDiv.classList.add('text-red-600', 'text-sm', 'mt-1');
+            errorDiv.textContent = 'You can select up to 3 food brands.';
+            foodOptionsDiv.appendChild(errorDiv);
+            setTimeout(() => errorDiv.remove(), 3000);
+          } else {
+            const existingError = document.getElementById('foodError');
+            if (existingError) existingError.remove();
+          }
+        });
+      });
+    }
+
+    nextStep4Button.addEventListener('click', () => {
+      const selectedFoods = Array.from(document.querySelectorAll('.food-checkbox:checked')).map(cb => cb.value);
+      petProfile.food = selectedFoods;
+      document.getElementById('step4').classList.add('hidden');
+      document.getElementById('step5').classList.remove('hidden');
+      petNameDisplay2.textContent = petProfile.name;
+      populateInterestOptions();
+      currentStep = 5;
+    });
+
+    // Step 5: Other interests
+    function populateInterestOptions() {
+      interestOptionsDiv.innerHTML = '';
+      const interests = interestOptions[petProfile.type] || [];
+      interests.forEach(interest => {
+        const div = document.createElement('div');
+        div.classList.add('flex', 'items-center', 'mb-2');
+        div.innerHTML = `
+          <input type="checkbox" class="interest-checkbox mr-2" value="${interest}">
+          <label>${interest}</label>
+        `;
+        interestOptionsDiv.appendChild(div);
+      });
+
+      document.querySelectorAll('.interest-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+          const selected = Array.from(document.querySelectorAll('.interest-checkbox:checked')).map(cb => cb.value);
+          if (selected.length > 3) {
+            checkbox.checked = false;
+            const errorDiv = document.createElement('div');
+            errorDiv.id = 'interestError';
+            errorDiv.classList.add('text-red-600', 'text-sm', 'mt-1');
+            errorDiv.textContent = 'You can select up to 3 items.';
+            interestOptionsDiv.appendChild(errorDiv);
+            setTimeout(() => errorDiv.remove(), 3000);
+          } else {
+            const existingError = document.getElementById('interestError');
+            if (existingError) existingError.remove();
+          }
+        });
+      });
+    }
+
+    finishQuizButton.addEventListener('click', () => {
+      const selectedInterests = Array.from(document.querySelectorAll('.interest-checkbox:checked')).map(cb => cb.value);
+      petProfile.interests = selectedInterests;
+      savePetProfile();
+      displayPetProfile();
+      quizContainer.classList.add('hidden');
+      profileDisplay.classList.remove('hidden');
+    });
+
+    // Save profile to local storage
+    function savePetProfile() {
+      localStorage.setItem('petProfile', JSON.stringify(petProfile));
+    }
+
+    // Display pet profile and suggestions
+    function displayPetProfile() {
+      const food = Array.isArray(petProfile.food) ? petProfile.food : [];
+      const interests = Array.isArray(petProfile.interests) ? petProfile.interests : [];
+
+      loginBannerDiv.innerHTML = `
+        <div class="login-banner border rounded-lg p-3 bg-blue-50 mb-4">
+          <p class="text-sm text-gray-800 mb-2">Unlock exclusive benefits! Log in to save ${petProfile.name || 'your pet'}'s profile, manage multiple pets, and access tailored offers.</p>
+          <a href="https://www.zooplus.com/account/mypetprofile" target="_blank" class="inline-block bg-[#237803] text-white px-3 py-1 rounded-lg text-large hover:bg-[#144700]">Log In & Save Profile</a>
+        </div>
+      `;
+
+      petInfoDiv.innerHTML = `
+        <div class="grid grid-cols-2">
+          <div class="pet-info-card border rounded-lg p-2 bg-gray-50">
+            <span class="text-sm font-semibold text-gray-600">Name</span>
+            <p class="text-gray-800">${petProfile.name || 'Not provided'}</p>
+          </div>
+          <div class="pet-info-card border rounded-lg p-2 bg-gray-50">
+            <span class="text-sm font-semibold text-gray-600">Gender</span>
+            <p class="text-gray-800">${petProfile.gender || 'Not provided'}</p>
+          </div>
+          <div class="pet-info-card border rounded-lg p-2 bg-gray-50">
+            <span class="text-sm font-semibold text-gray-600">Type</span>
+            <p class="text-gray-800">${petProfile.type || 'Not provided'}</p>
+          </div>
+          <div class="pet-info-card border rounded-lg p-2 bg-gray-50">
+            <span class="text-sm font-semibold text-gray-600">Breed</span>
+            <p class="text-gray-800">${petProfile.breed || 'Not provided'}</p>
+          </div>
+          <div class="pet-info-card border rounded-lg p-2 bg-gray-50">
+            <span class="text-sm font-semibold text-gray-600">Favorite Foods</span>
+            <p class="text-gray-800">${food.length > 0 ? food.join(', ') : 'None selected'}</p>
+          </div>
+          <div class="pet-info-card border rounded-lg p-2 bg-gray-50">
+            <span class="text-sm font-semibold text-gray-600">Interests</span>
+            <p class="text-gray-800">${interests.length > 0 ? interests.join(', ') : 'None selected'}</p>
+          </div>
+        </div>
+      `;
+
+      productSuggestionsDiv.innerHTML = '';
+      const suggestions = productSuggestions[petProfile.type] || [];
+      suggestions.forEach(product => {
+        const div = document.createElement('div');
+        div.classList.add('border', 'p-4', 'rounded-lg', 'product-block', 'cursor-pointer');
+        div.innerHTML = `
+          <a href="${product.link}" target="_blank" class="flex items-start">
+            <img src="${product.image}" alt="${product.name}" class="w-20 h-20 object-cover rounded-lg mr-4">
+            <div>
+              <h4 class="font-semibold text-gray-800">${product.name}</h4>
+              <p class="text-gray-600 text-sm">${product.description}</p>
+              <p class="text-blue-600 font-semibold text-sm mt-1">${product.price}</p>
+            </div>
+          </a>
+        `;
+        productSuggestionsDiv.appendChild(div);
+      });
+    }
+
+    // Reset quiz UI state without clearing profile
+    function resetQuizState() {
+      currentStep = 0;
+      petNameInput.value = '';
+      petGenderSelect.value = '';
+      petBreedInput.value = '';
+      document.querySelectorAll('.pet-type').forEach(btn => btn.classList.remove('bg-blue-200'));
+      nextStep2Button.classList.add('hidden');
+      initialState.classList.remove('hidden');
+      quizContainer.classList.add('hidden');
+      profileDisplay.classList.add('hidden');
+      document.querySelectorAll('.quiz-step').forEach(step => step.classList.add('hidden'));
+      nameErrorDiv.classList.add('hidden');
+      genderErrorDiv.classList.add('hidden');
+      breedErrorDiv.classList.add('hidden');
+      showSlide(0);
+      startSlider();
+    }
+
+    // Check for existing profile on load
+    window.addEventListener('load', () => {
+      const savedProfile = localStorage.getItem('petProfile');
+      if (savedProfile) {
+        petProfile = JSON.parse(savedProfile);
+        petProfile.food = Array.isArray(petProfile.food) ? petProfile.food : [];
+        petProfile.interests = Array.isArray(petProfile.interests) ? petProfile.interests : [];
+        initialState.classList.add('hidden');
+        quizContainer.classList.add('hidden');
+        profileDisplay.classList.remove('hidden');
+        petProfilePanel.classList.remove('hidden');
+        petProfilePanel.classList.add('visible');
+        clearInterval(slideInterval);
+        displayPetProfile();
+      } else {
+        showSlide(0);
+        startSlider();
+      }
+    });
+  </script>
+</body>
+</html>
